@@ -9,13 +9,9 @@ namespace Roguelike.Entities
 {
     public class EnemyEntity : BaseEntity
     {
-        public EnemyEntity(int hp, string name, int attSpeed, int damage, int moveSpeed, string display)
+        public EnemyEntity(EntityStats stats) : base (stats)
         {
-            DisplayString = display;
-            base.Init(hp, name, new EntityStats(attSpeed, damage, moveSpeed));
+
         }
-
-        public EnemyEntity() {  }
-
     }
 }

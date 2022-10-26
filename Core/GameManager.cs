@@ -36,17 +36,23 @@ namespace Roguelike.Core
 
             Console.WriteLine("generating...");
             mapManager.generator.Generate(170);
+
+            // spawn player
             int playerX, playerY;
             do
             {
                 playerX = random.Next(MapWidth);
                 playerY = random.Next(MapHeight);
             } while (mapManager.Map[playerX, playerY] != 1);
-            PlayerEntity player = new();
-            player.Init(mapManager.Map, 20);
+
+            EntityStats playerStats = new("you", "\u001b[101m \u001b[0m", 20, 1, 4, 1);
+            PlayerEntity player = new(playerStats);
+            player.Spawn(mapManager.Map);
+
             entityManager.Spawn(player);
-            entityManager.SpawnRandomEnemies(5, 10);
+
             Player = entityManager.GetPlayer();
+            entityManager.SpawnRandomEnemies(5, 10);
             renderer.Display();
             Loop();
         }
@@ -55,8 +61,6 @@ namespace Roguelike.Core
         {
             renderer.Display();
             logger.Display();
-            for (int i = 0; i < entityManager.Entities.Count; i++)
-                Console.WriteLine($"{i}\t{entityManager.Entities[i].PosX}, {entityManager.Entities[i].PosY}");
             inputHandler.WaitForInput();
             
             // here would be a tick of other entities

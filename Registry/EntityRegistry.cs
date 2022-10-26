@@ -10,14 +10,15 @@ namespace Roguelike.Registry
     public class EntityRegistry
     {
         // just few lists of all entities
-        public List<BaseEntity> Enemies;
-        public List<BaseEntity> Npcs;
+        public List<EntityStats> Enemies;
+        public List<EntityStats> Npcs;
 
         public EntityRegistry()
         {
-            Enemies = new List<BaseEntity>();
-            Npcs = new List<BaseEntity>();
-            Enemies.Add(new EnemyEntity(8, "Rat", 1, 2, 1, "\u001b[42mA\u001b[0m"));
+            Enemies = new List<EntityStats>();
+            Npcs = new List<EntityStats>();
+
+            Enemies.Add(new EntityStats("rat", "A", 8, 1, 2, 1));
         }
     }
 }

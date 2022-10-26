@@ -5,6 +5,8 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
+using Roguelike.Entities;
+
 namespace Roguelike.Core
 {
     public class MapRenderer
@@ -63,11 +65,11 @@ namespace Roguelike.Core
                 {
                     int roundedRayX = (int)Math.Round(rayX);
                     int roundedRayY = (int)Math.Round(rayY);
-                    // MapVisible[roundedRayX, roundedRayY] = Map[roundedRayX, roundedRayY];
-                    MapVisible = Map;
+                    MapVisible[roundedRayX, roundedRayY] = Map[roundedRayX, roundedRayY];
+                    // MapVisible = Map;
                     MapMemory[roundedRayX, roundedRayY] = Map[roundedRayX, roundedRayY];
                     int current = Map[roundedRayX, roundedRayY];
-                    if (current == 2 || (current == 3 && !_gm.EntityManager.GetEntityAtPosition((int)roundedRayX, (int)roundedRayY, out _))) break;
+                    if (current == 2 || (current == 3 && !_gm.EntityManager.GetEntityAtPosition(roundedRayX, roundedRayY, out _))) break;
                     rayX += directionX * rayForwardStep;
                     rayY += directionY * rayForwardStep;
                 }
@@ -86,10 +88,10 @@ namespace Roguelike.Core
                             // VS warns that this entity may be of value null
                             // this bit of code will run if there's an entity at position (x, y)
                             // if there's no entity, this bit will be ignored
-                            Console.Write(entity.DisplayString);
+                            Console.Write((entity).MapDisplay);
                         }
                         else Console.Write(mapChars[MapVisible[x, y]]); 
-                        }
+                    }
                     else Console.Write(mapMemoryChars[MapMemory[x, y]]);
                 }
                 Console.Write('\n');

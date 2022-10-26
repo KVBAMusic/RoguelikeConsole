@@ -5,42 +5,45 @@ namespace Roguelike.Entities
     [Serializable]
     public struct EntityStats
     {
+        public string name;
+        public string mapDisplay;
         public int attackSpeed;
         public int damage;
         public int moveSpeed;
+        public int hp;
 
-        public EntityStats(int attSpeed, int damage, int moveSpeed)
+        public EntityStats(string name, string display, int hp, int attackSpeed, int damage, int moveSpeed)
         {
-            this.attackSpeed = attSpeed;
+            this.name = name;
+            this.mapDisplay = display;
+            this.attackSpeed = attackSpeed;
             this.damage = damage;
             this.moveSpeed = moveSpeed;
+            this.hp = hp;
         }
     }
 
     public class BaseEntity
     {
         Random _random;
-        public string Name  { get; set; }
+        public string Name  => stats.name;
+        public string MapDisplay => stats.mapDisplay;
         public int PosX => posX;
         public int PosY => posY;
-        public int HP => hp;
+        public int HP => stats.hp;
+        public int MaxHP => maxHp;
 
-        public string DisplayString;
         public EntityStats stats;
 
         private int posX;
         private int posY;
-        int hp;
-        public BaseEntity()
-        {
-            _random = new Random();
-        }
 
-        public virtual void Init(int hp, string name, EntityStats stats)
+        private int maxHp;
+        public BaseEntity(EntityStats stats)
         {
-            this.hp = hp;
-            Name = name;
             this.stats = stats;
+            _random = new Random();
+            maxHp = stats.hp;
         }
 
         public virtual void Spawn(int[,] Map)

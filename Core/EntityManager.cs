@@ -36,9 +36,12 @@ namespace Roguelike.Core
             {
                 if (e is PlayerEntity)
                 {
+                    if (e is null) throw new NullReferenceException("no player in game");
                     return (PlayerEntity)e;
                 }
             }
+
+            throw new NullReferenceException("no player in game");
             return null;
         }
 
@@ -64,9 +67,9 @@ namespace Roguelike.Core
 
         private void SpawnEnemy()
         {   
-            EnemyEntity e = (EnemyEntity)registry.Enemies[_random.Next(registry.Enemies.Count)];
-            Entities.Add(e);
+            EnemyEntity e = new EnemyEntity(registry.Enemies[_random.Next(registry.Enemies.Count)]);
             e.Spawn(_gm.MapManager.Map);
+            Entities.Add(e);
         }
 
         public void SpawnRandomEnemies(int min, int max)
