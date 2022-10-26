@@ -60,13 +60,15 @@ namespace Roguelike.Core
                 double directionX = Math.Sin(angle * DEG2RAD);
                 double directionY = Math.Cos(angle * DEG2RAD);
 
+                // for debug
+                // MapVisible = Map;
+
                 //repeat for 12 steps in the specified direction
                 for (int j = 0; j < 12; j++)
                 {
-                    int roundedRayX = (int)Math.Round(rayX);
-                    int roundedRayY = (int)Math.Round(rayY);
+                    int roundedRayX = (int)Math.Clamp(Math.Round(rayX), 0, 80);
+                    int roundedRayY = (int)Math.Clamp(Math.Round(rayY), 0, 24);
                     MapVisible[roundedRayX, roundedRayY] = Map[roundedRayX, roundedRayY];
-                    // MapVisible = Map;
                     MapMemory[roundedRayX, roundedRayY] = Map[roundedRayX, roundedRayY];
                     int current = Map[roundedRayX, roundedRayY];
                     if (current == 2 || (current == 3 && !_gm.EntityManager.GetEntityAtPosition(roundedRayX, roundedRayY, out _))) break;

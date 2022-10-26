@@ -35,7 +35,7 @@ namespace Roguelike.Core
         {
 
             Console.WriteLine("generating...");
-            mapManager.generator.Generate(170);
+            mapManager.generator.Generate(15, 1);
 
             // spawn player
             int playerX, playerY;
