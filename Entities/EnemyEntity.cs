@@ -13,5 +13,11 @@ namespace Roguelike.Entities
         {
 
         }
+
+        public override void Tick()
+        {
+            // move in random direction
+
+        }
     }
 }

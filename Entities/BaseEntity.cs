@@ -25,7 +25,7 @@ namespace Roguelike.Entities
 
     public class BaseEntity
     {
-        Random _random;
+        protected Random _random;
         public string Name  => stats.name;
         public string MapDisplay => stats.mapDisplay;
         public int PosX => posX;
@@ -39,6 +39,8 @@ namespace Roguelike.Entities
         private int posY;
 
         private int maxHp;
+
+        protected bool moved;
         public BaseEntity(EntityStats stats)
         {
             this.stats = stats;
@@ -46,18 +48,24 @@ namespace Roguelike.Entities
             maxHp = stats.hp;
         }
 
+        public virtual void Tick()
+        {
+
+        }
+
         public virtual void Spawn(int[,] Map)
         {
             do
             {
-                posX = _random.Next(80);
-                posY = _random.Next(24);
+                posX = _random.Next(60);
+                posY = _random.Next(40);
             } while (Map[posX, posY] != 1);
         }
 
         public virtual void Move(int deltaX, int deltaY, int[,] Map)
         {
-            if (Map[PosX + deltaX, PosY + deltaY] != 2)
+            moved = Map[PosX + deltaX, PosY + deltaY] != 2;
+            if (moved)
             {
                 posX += deltaX;
                 posY += deltaY;

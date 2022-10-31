@@ -56,9 +56,9 @@ namespace Roguelike.Core.Map
 
         public void Generate(int numRooms, int corridorPasses)
         {
-            int minW = 3;
+            int minW = 5;
             int maxW = 11;
-            int minH = 3;
+            int minH = 5;
             int maxH = 8;
 
             int roomX;
@@ -71,16 +71,46 @@ namespace Roguelike.Core.Map
             List<CorridorPoint> points = new List<CorridorPoint>();
             for (int i = 0; i < numRooms; i++)
             {
-                roomX = random.Next(1, 80);
-                roomY = random.Next(1, 24);
+                bool isValid;
+                do
+                {
+                    isValid = true;
+
+                    roomX = random.Next(1, w);
+                    roomY = random.Next(1, h);
+                    roomW = random.Next(minW, maxW) + 2;
+                    roomH = random.Next(minH, maxH) + 2;
+
+                    for (int x = roomX; x < roomX + roomW; x++)
+                    {
+                        for (int y = roomY; y < roomY + roomH; y++)
+                        {
+                            try
+                            {
+                                if (Map[x, y] == 1)
+                                {
+                                    isValid = false;
+                                    break;
+                                }
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                isValid = false;
+                                break;
+                            }
+                        }
+                        if (!isValid)
+                        {
+                            break;
+                        }
+                    }
+                } while (!isValid);
+
+                // check if there's no overlap
+
                 points.Add(new CorridorPoint(roomX, roomY)); // those points will be used for generating corridors
-
-                // create a room 
-                roomW = random.Next(minW, maxW) + 2;
-                roomH = random.Next(minH, maxH) + 2;
-
-                roomX -= roomW/2;
-                roomY -= roomH/2;
+                roomX -= roomW / 2;
+                roomY -= roomH / 2;
                 for (int x = roomX; x <= roomX + roomW; x++)
                 {
                     for (int y = roomY; y <= roomY + roomH; y++)
@@ -91,14 +121,13 @@ namespace Roguelike.Core.Map
                 }
             }
 
-            Console.WriteLine("rooms generated");
+            Console.WriteLine("generating corridors...");
 
             List<CorridorPoint> corridor = new List<CorridorPoint>();
             // generate corridors
             // start at a random room
             // pick a random room to go to
             // finish once all rooms have been visited
-            // repeat twice or thrice
             for (int i = 0; i < corridorPasses; i++)
             {
                 corridor = points;
@@ -120,7 +149,8 @@ namespace Roguelike.Core.Map
                     {
                         if (mode == -1) // horizontal first
                         {
-                            for (int k = start.x; k != end.x; k += Math.Sign(diffX))
+                            int dir = Math.Sign(diffX);
+                            for (int k = start.x; k != end.x; k += dir)
                             {
                                 // place a floor tile
                                 // if there's a wall, place a door
@@ -128,7 +158,21 @@ namespace Roguelike.Core.Map
                                 {
                                     if (Map[currentX, currentY] == 2)
                                     {
-                                        Map[currentX, currentY] = 3;
+                                        if (Map[currentX + dir, currentY] != 2)
+                                            Map[currentX, currentY] = 3;
+                                        else
+                                        {
+                                            // avoid the wall
+                                            if (Map[currentX, ++currentY + 1] != 2)
+                                            {
+                                                Map[currentX, currentY] = 2;
+                                            }
+                                            else if (Map[currentX, --currentY - 1] != 2)
+                                            {
+                                                currentY--;
+                                                Map[currentX, currentY] = 2;
+                                            }
+                                        }
                                     }
                                     else Map[currentX, currentY] = 1;
                                 }
@@ -141,7 +185,8 @@ namespace Roguelike.Core.Map
                         }
                         if (mode == 0) // vertical first
                         {
-                            for (int k = start.y; k != end.y; k += Math.Sign(diffY))
+                            int dir = Math.Sign(diffY);
+                            for (int k = start.y; k != end.y; k += dir)
                             {
                                 // place a floor tile
                                 // if there's a wall, place a door
@@ -150,7 +195,21 @@ namespace Roguelike.Core.Map
                                 {
                                     if (Map[currentX, currentY] == 2)
                                     {
-                                        Map[currentX, currentY] = 3;
+                                        if (Map[currentX, currentY + dir] != 2)
+                                            Map[currentX, currentY] = 3;
+                                        else
+                                        {
+                                            // avoid the wall
+                                            if (Map[++currentX, currentY] != 2)
+                                            {
+                                                Map[currentX, currentY] = 2;
+                                            }
+                                            else if (Map[--currentX - 1, currentY - 1] != 2)
+                                            {
+                                                currentX--;
+                                                Map[currentX, currentY] = 2;
+                                            }
+                                        }
                                     }
                                     else Map[currentX, currentY] = 1;
                                 }
@@ -173,12 +232,14 @@ namespace Roguelike.Core.Map
             {
                 for (int y = 0; y < h; y++)
                 {
-                    if (Map[x, y] == 0 || (x == 0 || y == 0 || x == 79 || y == 23))
+                    if (Map[x, y] == 0 || (x == 0 || y == 0 || x == w - 1 || y == h - 1))
                     {
                         Map[x, y] = 2;
                     }
                 }
             }
+
+            Console.WriteLine("done!");
         }
 
     }

@@ -48,7 +48,7 @@ namespace Roguelike.Core
             // send rays from the position of player
 
             double angle = 0f;
-            int numRays = 120;
+            int numRays = 180;
             double rayForwardStep = 1;
             for (int i = 0; i < numRays; i++)
             {
@@ -66,8 +66,8 @@ namespace Roguelike.Core
                 //repeat for 12 steps in the specified direction
                 for (int j = 0; j < 12; j++)
                 {
-                    int roundedRayX = (int)Math.Clamp(Math.Round(rayX), 0, 80);
-                    int roundedRayY = (int)Math.Clamp(Math.Round(rayY), 0, 24);
+                    int roundedRayX = (int)Math.Clamp(Math.Round(rayX), 0, _gm.MapWidth);
+                    int roundedRayY = (int)Math.Clamp(Math.Round(rayY), 0, _gm.MapHeight);
                     MapVisible[roundedRayX, roundedRayY] = Map[roundedRayX, roundedRayY];
                     MapMemory[roundedRayX, roundedRayY] = Map[roundedRayX, roundedRayY];
                     int current = Map[roundedRayX, roundedRayY];

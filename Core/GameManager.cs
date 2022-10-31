@@ -20,8 +20,8 @@ namespace Roguelike.Core
         public MapRenderer Renderer => renderer;
         public InputHandler InputHandler => inputHandler;
 
-        public readonly int MapWidth = 80;
-        public readonly int MapHeight = 24;
+        public readonly int MapWidth = 60;
+        public readonly int MapHeight = 40;
         public GameManager()
         {
             entityManager = new(this);
@@ -60,11 +60,15 @@ namespace Roguelike.Core
         public void Loop()
         {
             renderer.Display();
+            Console.Write(Player.GetCurrentStats());
             logger.Display();
             inputHandler.WaitForInput();
             
             // here would be a tick of other entities
-
+            foreach (var e in entityManager.Entities)
+            {
+                e.Tick();
+            }
             // --------------------------------------
             Loop();
         }

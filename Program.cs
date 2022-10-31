@@ -56,7 +56,7 @@ controls:
 ------------------------------");
 
             Console.WriteLine("press any key to start");
-            Console.ReadKey();
+            Console.ReadKey(true);
 
             gameManager.Start();
         }
