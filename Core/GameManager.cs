@@ -57,6 +57,20 @@ namespace Roguelike.Core
             Loop();
         }
 
+        public void TryMoveEntity(object? sender, MoveEventArgs e)
+        {
+            int dx = e.deltaX;
+            int dy = e.deltaY;
+
+            int px = e.Entity.PosX;
+            int py = e.Entity.PosY;
+
+            if (mapManager.Map[px + dx, py + dy] != 2)
+            {
+                e.Entity.MoveSuccessful(dx, dy);
+            }
+        }
+
         public void Loop()
         {
             renderer.Display();
@@ -67,7 +81,26 @@ namespace Roguelike.Core
             // here would be a tick of other entities
             foreach (var e in entityManager.Entities)
             {
+                e.OnMove += TryMoveEntity;
+                int[] md;
+                if (e is PlayerEntity)
+                {
+                    md = inputHandler.playerMoveDelta;
+                }
+                else
+                {
+                    md = random.Next(4) switch
+                    {
+                        0 => new int[] {  1, 0 },
+                        1 => new int[] { -1, 0 },
+                        2 => new int[] { 0,  1 },
+                        3 => new int[] { 0, -1 },
+                        _ => new int[] { 0,  0 }
+                    };
+                }
+                e.Move(md[0], md[1]);
                 e.Tick();
+                e.OnMove -= TryMoveEntity;
             }
             // --------------------------------------
             Loop();

@@ -17,9 +17,9 @@ namespace Roguelike.Entities
         }
 
 
-        public override void Move(int deltaX, int deltaY, int[,] Map)
+        public override void Move(int deltaX, int deltaY)
         {
-            base.Move(deltaX, deltaY, Map);
+            base.Move(deltaX, deltaY);
         }
 
         public override void Tick()

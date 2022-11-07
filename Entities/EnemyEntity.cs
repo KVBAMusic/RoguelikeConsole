@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Entities
 {
+
     public class EnemyEntity : BaseEntity
     {
         public EnemyEntity(EntityStats stats) : base (stats)

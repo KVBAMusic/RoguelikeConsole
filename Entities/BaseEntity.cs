@@ -2,6 +2,20 @@ using System;
 
 namespace Roguelike.Entities
 {
+    public class MoveEventArgs : EventArgs
+    {
+        public BaseEntity Entity { get; private set; }
+        public int deltaX { get; private set; }
+        public int deltaY { get; private set; }
+
+        public MoveEventArgs(BaseEntity entity, int deltaX, int deltaY)
+        {
+            Entity = entity;
+            this.deltaX = deltaX;
+            this.deltaY = deltaY;
+        }
+    }
+
     [Serializable]
     public struct EntityStats
     {
@@ -25,6 +39,8 @@ namespace Roguelike.Entities
 
     public class BaseEntity
     {
+        public event EventHandler<MoveEventArgs> OnMove;
+
         protected Random _random;
         public string Name  => stats.name;
         public string MapDisplay => stats.mapDisplay;
@@ -62,14 +78,17 @@ namespace Roguelike.Entities
             } while (Map[posX, posY] != 1);
         }
 
-        public virtual void Move(int deltaX, int deltaY, int[,] Map)
+        public virtual void Move(int deltaX, int deltaY)
         {
-            moved = Map[PosX + deltaX, PosY + deltaY] != 2;
-            if (moved)
-            {
-                posX += deltaX;
-                posY += deltaY;
-            }
+            moved = false;
+            OnMove?.Invoke(this, new MoveEventArgs(this, deltaX, deltaY));
+        }
+
+        public void MoveSuccessful(int deltaX, int deltaY)
+        {
+            moved = true;
+            posX += deltaX;
+            posY += deltaY;
         }
 
         public virtual void Attack(BaseEntity target)

@@ -12,6 +12,7 @@ namespace ConsoleApp1.Core
     {
         GameManager _gm;
         public ConsoleKey LastPressed { get; private set; }
+        public int[] playerMoveDelta;
 
         public InputHandler(GameManager gm)
         {
@@ -35,7 +36,7 @@ namespace ConsoleApp1.Core
                 ConsoleKey.S => 1,
                 _ => 0
             };
-            _gm.Player.Move(dx, dy, _gm.MapManager.Map);
+            playerMoveDelta = new int[] { dx, dy };
         }
     }
 }
